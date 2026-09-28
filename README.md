@@ -1,9 +1,9 @@
-# Solar + Storage Workbench
+# Solar and Storage Analysis Tools
 
-Two working engineering tools for commercial solar and battery storage, built by **Chirag Shetty**, renewable energy and BESS engineer.
+Two tools for solar and battery storage projects. The first estimates how a move from NEM 2.0 to NEM 3.0 changes a site's utility bill, and how much adding a battery saves. The second compares a PV and battery plant's actual output with what the weather allowed, and breaks down where energy was lost.
 
 **Live site:** https://chirag121094.github.io/solar-storage-workbench/  
-**Contact:** [LinkedIn](https://www.linkedin.com/in/cs753951/) · chiragshetty68@gmail.com
+**Author:** Chirag Shetty · [LinkedIn](https://www.linkedin.com/in/cs753951/) · chiragshetty68@gmail.com
 
 ![NEM 3.0 storage savings](docs/nem-savings.png)
 
@@ -50,24 +50,46 @@ For a PV + BESS plant with hourly SCADA:
 - ASTM E2848 regression capacity test on any 14-day window
 - Battery round-trip efficiency with and without auxiliary load, availability, cycles and state of health
 
-## Run the Python engines
+## Get started
 
-The website runs the same calculations in the browser. The Python and browser results match to the dollar on the sample data.
+**Just want to see results?** Open the [live site](https://chirag121094.github.io/solar-storage-workbench/). Nothing to install. On Sheet 01, choose **My site** and upload your utility interval data, an optional solar 8760 and an optional Energy Toolbase battery export.
 
-```bash
-pip install -r requirements.txt
-cd python
+**Want to run the Python?**
 
-# NEM savings: one combined file, or separate load / solar / battery files
-python nem_bess_savings.py ../data/sample_site_8760.csv
-python nem_bess_savings.py --load utility.csv --solar solar_8760.csv --battery etb_export.csv
+1. Get the code: click the green **Code** button above → **Download ZIP**, then unzip it. Or, with Git installed:
+   ```bash
+   git clone https://github.com/Chirag121094/solar-storage-workbench.git
+   cd solar-storage-workbench
+   ```
+2. Install Python 3.10 or newer from [python.org](https://www.python.org/downloads/), then install the two libraries:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run the engines from the `python` folder:
+   ```bash
+   cd python
 
-# Asset performance
-python asset_performance.py ../data/hybrid_site_scada_8760.csv ../data/bess_daily.csv ../data/bess_capacity_tests.csv
+   # NEM savings: one combined file, or separate load / solar / battery files
+   python nem_bess_savings.py ../data/sample_site_8760.csv
+   python nem_bess_savings.py --load utility.csv --solar solar_8760.csv --battery etb_export.csv
 
-# Regenerate the synthetic sample data
-python gen_data.py
+   # Asset performance
+   python asset_performance.py ../data/hybrid_site_scada_8760.csv ../data/bess_daily.csv ../data/bess_capacity_tests.csv
+   ```
+   On Windows, use `py` in place of `python` if `python` is not found.
+
+Expected output for the sample site:
+
 ```
+scenario        Baseline (no solar)  Solar, NEM 2.0  Solar, NEM 3.0  Solar + BESS, NEM 3.0
+annual_bill               1,010,696         578,372         634,857                466,127
+energy_net                  567,232         231,035         287,520                217,860
+demand                      427,263         331,137         331,137                232,067
+export_mwh                        0             744             744                    264
+total_savings                     0         432,323         375,838                544,569
+```
+
+The website runs the same calculations in the browser, and the two agree to the dollar. `python gen_data.py` regenerates the synthetic sample data.
 
 ## Repository layout
 
