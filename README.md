@@ -2,7 +2,7 @@
 
 Two working engineering tools for commercial solar and battery storage, built by **Chirag Shetty**, renewable energy and BESS engineer.
 
-**Live site:** https://YOUR-GITHUB-USERNAME.github.io/solar-storage-workbench/  
+**Live site:** https://chirag121094.github.io/solar-storage-workbench/  
 **Contact:** [LinkedIn](https://www.linkedin.com/in/cs753951/) · chiragshetty68@gmail.com
 
 ![NEM 3.0 storage savings](docs/nem-savings.png)
@@ -82,7 +82,7 @@ docs/             screenshots
 
 1. Create a public repository named `solar-storage-workbench` and upload these files.
 2. Settings → Pages → Source: **Deploy from a branch**, Branch: **main**, folder **/ (root)**.
-3. The site appears at `https://YOUR-GITHUB-USERNAME.github.io/solar-storage-workbench/` within a minute or two.
+3. The site appears at `https://chirag121094.github.io/solar-storage-workbench/` within a minute or two.
 4. Optional: add a custom domain under Settings → Pages.
 
 ## Data and assumptions
