@@ -60,7 +60,7 @@ a { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ---------- header */
-.head { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: end; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+.head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: end; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
 .head .who { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
 .head .who .dot { width: 9px; height: 9px; background: var(--accent); border-radius: 50%; }
 .head .bio { margin-top: 16px; max-width: 64ch; color: var(--ink-2); font-size: 16px; }
@@ -254,29 +254,19 @@ pre.code { margin: 0; max-height: 440px; overflow: auto; font: 12px/1.55 var(--f
   <header class="head">
     <div>
       <div class="who"><span class="dot" aria-hidden="true"></span><span class="label">Chirag Shetty · Renewable energy &amp; BESS engineer</span></div>
-      <h1>Storage economics and plant performance, modeled hour by hour.</h1>
-      <p class="bio">Seven years across utility-scale solar PV, standalone and hybrid battery storage, and interconnection in CAISO, PJM, ERCOT and MISO. These two working tools show how I take a site from interval data to a savings case, and a plant from SCADA to a performance verdict.</p>
-      <div class="chips"><span class="chip">NEM 2.0 / NBT billing</span><span class="chip">BESS dispatch</span><span class="chip">Energy Toolbase</span><span class="chip">ASTM E2848</span><span class="chip">Python</span><span class="chip">CAISO · PJM · ERCOT · MISO</span></div>
+      <h1>Solar and storage analysis tools</h1>
+      <p class="bio">Two tools for solar and battery storage projects. The first estimates how a move from NEM 2.0 to NEM 3.0 changes a site&#39;s utility bill, and how much adding a battery saves. The second compares a PV and battery plant&#39;s actual output with what the weather allowed, and breaks down where energy was lost.</p>
       <div class="contact">
         <a class="btn" href="https://www.linkedin.com/in/cs753951/" target="_blank" rel="noopener">LinkedIn ↗</a>
         <span class="email mono" id="email">chiragshetty68@gmail.com</span>
         <button type="button" class="btn ghost" id="copy-email">Copy email</button>
       </div>
     </div>
-    <div class="tblock" aria-label="Drawing title block">
-      <div class="wide"><span class="k">Project</span><span class="v">Solar + storage workbench</span></div>
-      <div><span class="k">Engineer</span><span class="v">Chirag Shetty</span></div>
-      <div><span class="k">Rev</span><span class="v">A · 2026-09-28</span></div>
-      <div><span class="k">Sheets</span><span class="v">3</span></div>
-      <div><span class="k">Resolution</span><span class="v">8760 h / 35040 q</span></div>
-      <div class="wide"><span class="k">Data</span><span class="v">Synthetic sample sites · upload your own CSV</span></div>
-    </div>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sheets">
     <button class="tab" role="tab" id="tab-nem" aria-controls="sheet-nem" aria-selected="true" data-sheet="nem"><span class="n">SHEET 01</span><span class="t">NEM 3.0 storage savings</span></button>
     <button class="tab" role="tab" id="tab-asset" aria-controls="sheet-asset" aria-selected="false" data-sheet="asset"><span class="n">SHEET 02</span><span class="t">Hybrid asset performance</span></button>
-    <button class="tab" role="tab" id="tab-methods" aria-controls="sheet-methods" aria-selected="false" data-sheet="methods"><span class="n">SHEET 03</span><span class="t">Methods &amp; code</span></button>
   </nav>
 
   <!-- ============================================================ SHEET 01 -->
@@ -543,54 +533,8 @@ pre.code { margin: 0; max-height: 440px; overflow: auto; font: 12px/1.55 var(--f
     </div>
   </section>
 
-  <!-- ============================================================ SHEET 03 -->
-  <section class="sheet" id="sheet-methods" role="tabpanel" aria-labelledby="tab-methods" hidden>
-    <div class="sheet-head">
-      <div>
-        <h2>How the numbers are made</h2>
-        <p>Both dashboards run the same calculations as the Python engines below, in the browser. The Python and browser results match to the dollar on the sample data.</p>
-      </div>
-    </div>
-    <div class="methods">
-      <article>
-        <h3>Sheet 01 · NEM billing</h3>
-        <ol>
-          <li><b>Baseline.</b> Every interval's import is priced at its TOU energy rate. Demand charges take the monthly maximum import (all hours), the 4–9pm peak, and in summer the part-peak.</li>
-          <li><b>NEM 2.0.</b> Exports earn the retail TOU rate minus non-bypassable charges. Credits roll forward month to month and offset energy charges only; demand and customer charges are paid monthly. Unused credit is forfeited at true-up, and any net-surplus kWh earns net surplus compensation.</li>
-          <li><b>NEM 3.0 (NBT).</b> Same netting and true-up, but each exported kWh earns the ACC value for its month and hour. Midday exports earn a few cents; summer evenings earn the most.</li>
-          <li><b>Solar + BESS.</b> Net load after the battery is billed under NBT. With an Energy Toolbase export, the file's battery column is used as-is. Otherwise the built-in dispatch charges only from surplus solar and flattens the 4–9pm peak by day-ahead water-filling.</li>
-        </ol>
-        <p>With 15-minute data, billed demand uses the 15-minute peak. Hourly data understates demand charges, most for peaky loads.</p>
-        <h3 style="margin-top:12px">Sheet 02 · Asset performance</h3>
-        <ol>
-          <li><b>Expected output.</b> PVWatts-style: Sandia open-rack module temperature, −0.35%/°C, 10% DC losses, 98% inverter efficiency, clipped at the AC rating.</li>
-          <li><b>Losses.</b> Availability = expected × (1 − inverter availability). Soiling = the daily soiling ratio applied to available energy. Curtailment = the unconstrained estimate minus delivered, during setpoint hours. Other is the remainder.</li>
-          <li><b>ASTM E2848.</b> Reporting conditions from the filtered window (60th-percentile POA, mean ambient and wind), OLS on measured and on modeled power, capacity ratio = measured ÷ modeled at reporting conditions.</li>
-          <li><b>Battery.</b> Round-trip efficiency at the PCS and including auxiliary energy, availability by day, equivalent full cycles, state of health from quarterly capacity tests.</li>
-        </ol>
-      </article>
-      <article>
-        <h3>Files</h3>
-        <div class="files">
-          <div class="file"><div><b>workbench-engines.zip</b><span>Both Python engines, the data generator and all sample CSVs.</span></div><button type="button" class="btn" data-dl="workbench-engines.zip">Download</button></div>
-          <div class="file"><div><b>sample_site_8760.csv</b><span>Commercial site in the Energy Toolbase column layout.</span></div><button type="button" class="btn ghost" data-dl="sample_site_8760.csv">Download</button></div>
-          <div class="file"><div><b>hybrid_site_scada_8760.csv</b><span>Hourly SCADA for the hybrid plant.</span></div><button type="button" class="btn ghost" data-dl="hybrid_site_scada_8760.csv">Download</button></div>
-          <div class="file"><div><b>acc_matrix_template.csv</b><span>12 × 24 export value matrix to edit and upload.</span></div><button type="button" class="btn ghost" data-dl="acc_matrix_template.csv">Download</button></div>
-        </div>
-        <div class="panel-head" style="margin-top:8px">
-          <h3>Source</h3>
-          <div class="mini-seg" role="group" aria-label="Source file" id="src-seg">
-            <button type="button" data-f="nem_bess_savings.py" aria-pressed="true">nem_bess_savings.py</button>
-            <button type="button" data-f="asset_performance.py" aria-pressed="false">asset_performance.py</button>
-          </div>
-        </div>
-        <pre class="code" id="src-code">Loading…</pre>
-      </article>
-    </div>
-  </section>
-
   <footer class="foot">
-    <span>Chirag Shetty · <a href="https://www.linkedin.com/in/cs753951/" target="_blank" rel="noopener">LinkedIn</a> · <span class="mono">chiragshetty68@gmail.com</span></span>
+    <span>Chirag Shetty · <a href="https://www.linkedin.com/in/cs753951/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Chirag121094/solar-storage-workbench" target="_blank" rel="noopener">Code on GitHub</a> · <span class="mono">chiragshetty68@gmail.com</span></span>
     <span>All sites and rates on this page are synthetic or illustrative. No client data.</span>
   </footer>
 </div>
@@ -1494,11 +1438,9 @@ if (typeof module !== 'undefined') module.exports = Engine;
     document.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', t.dataset.sheet === name));
     document.querySelectorAll('.sheet').forEach((s) => (s.hidden = s.id !== 'sheet-' + name));
     if (name === 'asset' && !assetReady) { assetReady = true; computeAsset(); }
-    if (name === 'methods' && !srcCache['nem_bess_savings.py']) showSrc('nem_bess_savings.py');
     if (push) { try { history.replaceState(null, '', '#' + name); } catch (e) {} }
   }
   document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => openSheet(t.dataset.sheet, true)));
-  $('src-seg').addEventListener('click', (e) => { const f = e.target.closest('button')?.dataset.f; if (f) showSrc(f); });
   const BUNDLE = ['nem_bess_savings.py', 'asset_performance.py', 'gen_data.py', 'sample_site_8760.csv', 'hybrid_site_scada_8760.csv', 'bess_daily.csv', 'bess_capacity_tests.csv', 'acc_matrix_template.csv'];
   async function saveBundle() {
     if (typeof JSZip === 'undefined') { toast('The zip library did not load.'); return; }
@@ -1550,7 +1492,7 @@ if (typeof module !== 'undefined') module.exports = Engine;
   });
   initNem(); initAsset();
   const h = (location.hash || '').slice(1);
-  openSheet(['nem', 'asset', 'methods'].includes(h) ? h : 'nem', false);
+  openSheet(['nem', 'asset'].includes(h) ? h : 'nem', false);
 })();
 </script>
 </body>
